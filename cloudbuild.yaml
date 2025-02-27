@@ -4,3 +4,9 @@ steps:
   # using codebuild internal cmd to build image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'samweb-app:v1', '.']
+  # step 2
+  # create container
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['run', '-itd', '--name','somning11',
+     '-p','1011"80','--rm','samweb-app:v1'
+     ]
