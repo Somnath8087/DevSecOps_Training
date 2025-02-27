@@ -21,8 +21,11 @@ steps:
      ]
 
      # step 5 app running status
-  - name: 'google/cloud-sdk'
-    args: 
-      - 'c'
-      - |
-        curl http://localhost:1011/health.html
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['exec','somning11','curl','-f','http://localhost/health.html']
+
+  #   entrypoint:
+  #   args: 
+  #     - 'c'
+  #     - |
+  #       curl http://localhost:1011/health.html
