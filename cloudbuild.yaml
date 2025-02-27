@@ -5,6 +5,10 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'samweb-app:v1', '.']
   # step 2
+  # to do SAST in build image 
+  - name: 'aquasec/trivy:latest'
+    args: ['image','samweb-app:v1']
+  #step 3
   # create container ss ss
   - name: 'gcr.io/cloud-builders/docker'
     args: ['run', '-itd', '--name','somning11',
