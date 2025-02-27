@@ -8,5 +8,5 @@ steps:
   # create container ss ss
   - name: 'gcr.io/cloud-builders/docker'
     args: ['run', '-itd', '--name','somning11',
-     '-p','1011"80','--rm','samweb-app:v1'
+     '-p','1011:80','--rm','samweb-app:v1'
      ]
