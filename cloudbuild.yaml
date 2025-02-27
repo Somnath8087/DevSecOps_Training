@@ -19,3 +19,10 @@ steps:
     args: ['run', '-itd', '--name', 'somning11',
      '-p', '1011:80', '--rm', 'samweb-app:v1'
      ]
+
+     # step 5 app running status
+  - name: 'google/cloud-sdk'
+    args: 
+      - 'c'
+      - |
+        curl http://localhost:1011/health.html
