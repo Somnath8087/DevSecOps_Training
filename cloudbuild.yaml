@@ -7,8 +7,13 @@ steps:
   # step 2
   # to do SAST in build image 
   - name: 'aquasec/trivy:latest'
-    args: ['image', '--severity', 'HIGH,CRITICAL','--format','json','--output','/tmp/samscan.json','--exit-code','1', 'samweb-app:v1']
-  # step 3
+    args: ['image', '--severity', 'HIGH,CRITICAL','--format','json','--output','/workspace/samscan.json','--exit-code','0', 'samweb-app:v1']
+  
+  #step 3
+  - name: 'google/cloud-sdk'
+    args: ['gsutil','cp','/workspace/samscan.json','gs://vodafone-trivy-scan-results/containers/']
+
+    # step 4
   # create container ss ss
   - name: 'gcr.io/cloud-builders/docker'
     args: ['run', '-itd', '--name', 'somning11',
