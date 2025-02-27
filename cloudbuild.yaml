@@ -25,7 +25,10 @@ steps:
     args: ['exec','somning11','curl','-f','http://localhost/health.html']
 
 # step 6 push image in artifacts registory
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args: ['push', 'asia-docker.pkg.dev/vodafone-devsecops/vodafone-webapp-images/samweb-app:v1']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', 'samweb-app:v1', 'asia-docker.pkg.dev/vodafone-devsecops/vodafone-webapp-images/samweb-app:v1']
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'asia-docker.pkg.dev/vodafone-devsecops/vodafone-webapp-images/samweb-app:v1']
 
-    
