@@ -7,10 +7,10 @@ steps:
   # step 2
   # to do SAST in build image 
   - name: 'aquasec/trivy:latest'
-    args: ['image','samweb-app:v1']
-  #step 3
+    args: ['image', '--severity', 'HIGH,CRITICAL', 'samweb-app:v1']
+  # step 3
   # create container ss ss
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['run', '-itd', '--name','somning11',
-     '-p','1011:80','--rm','samweb-app:v1'
+    args: ['run', '-itd', '--name', 'somning11',
+     '-p', '1011:80', '--rm', 'samweb-app:v1'
      ]
