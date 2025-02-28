@@ -18,9 +18,10 @@ spec:
         app: somning-app-deploy
     spec:
       containers:
-      - image: nginx
+      - image: asia-docker.pkg.dev/vodafone-devsecops/vodafone-webapp-images/samweb-app:v1
         name: nginx
         ports:
         - containerPort: 80
+        imagePullPolicy: Always
         resources: {}
 status: {}
