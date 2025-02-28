@@ -2,18 +2,7 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  # Step 1: Install Terraform
-  - name: 'hashicorp/terraform'
-    entrypoint: 'sh'
-    args:
-      - '-c'
-      - |
-        echo "Installing Terraform..."
-        curl -O https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
-        unzip terraform_1.0.0_linux_amd64.zip
-        mv terraform /usr/local/bin/
-
-  # Step 2: Initialize Terraform
+   # Step 2: Initialize Terraform
   - name: 'hashicorp/terraform'
     args: ['init']
 
