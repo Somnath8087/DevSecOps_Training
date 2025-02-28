@@ -33,7 +33,19 @@ steps:
 
 #step 8
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['get','nodes']
+    args: #['get','nodes']
+      - apply
+      - -f
+      - somning-app-deploy.yaml
+    env: #pass k8s info
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=my-first-cluster-1'
+
+#step 9
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: #['get','nodes']
+      - get
+      - pods,deploy
     env: #pass k8s info
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
       - 'CLOUDSDK_CONTAINER_CLUSTER=my-first-cluster-1'
