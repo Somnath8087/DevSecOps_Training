@@ -1,0 +1,11 @@
+services:
+  somning-python-app:
+  # image we want to build
+    image: somning-pyapp:samplev1
+  # location and name of Dockerfile 
+    build:
+      context: ./pyapp
+      dockerfile: Dockerfile
+  somning-web-app:
+    image: somning-web-app:samplev1
+    build: .
