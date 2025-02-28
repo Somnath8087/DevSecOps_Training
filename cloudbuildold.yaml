@@ -1,0 +1,51 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+steps:
+  # using codebuild internal cmd to build image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'samweb-app:v1', '.']
+  # step 2
+  # to do SAST in build image 
+  - name: 'aquasec/trivy:latest'
+    args: ['image', '--severity', 'HIGH,CRITICAL','--format','json','--output','/workspace/samscan.json','--exit-code','0', 'samweb-app:v1']
+  
+  #step 3
+  - name: 'google/cloud-sdk'
+    args: ['gsutil','cp','/workspace/samscan.json','gs://vodafone-trivy-scan-results/containers/']
+
+    # step 4
+  # create container ss ss
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['run', '-itd', '--name', 'somning11',
+     '-p', '1011:80', '--rm', 'samweb-app:v1'
+     ]
+
+     # step 5 app running status
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['exec','somning11','curl','-f','http://localhost/health.html']
+
+  # step 6 push image in google artifacts registory
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', 'samweb-app:v1', 'asia-docker.pkg.dev/vodafone-devsecops/vodafone-webapp-images/samweb-app:v1']
+  # step 7
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-docker.pkg.dev/vodafone-devsecops/vodafone-webapp-images/samweb-app:v1']
+
+#step 8
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: #['get','nodes']
+      - apply
+      - -f
+      - somning-app-deploy.yaml
+    env: #pass k8s info
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=my-first-cluster-1'
+
+#step 9
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: #['get','nodes']
+      - get
+      - pods,deploy
+    env: #pass k8s info
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=my-first-cluster-1'

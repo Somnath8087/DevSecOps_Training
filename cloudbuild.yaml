@@ -1,51 +1,26 @@
 options:
   logging: CLOUD_LOGGING_ONLY
+
 steps:
-  # using codebuild internal cmd to build image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'samweb-app:v1', '.']
-  # step 2
-  # to do SAST in build image 
-  - name: 'aquasec/trivy:latest'
-    args: ['image', '--severity', 'HIGH,CRITICAL','--format','json','--output','/workspace/samscan.json','--exit-code','0', 'samweb-app:v1']
-  
-  #step 3
-  - name: 'google/cloud-sdk'
-    args: ['gsutil','cp','/workspace/samscan.json','gs://vodafone-trivy-scan-results/containers/']
+  # Step 1: Install Terraform
+  - name: 'hashicorp/terraform'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        echo "Installing Terraform..."
+        curl -O https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
+        unzip terraform_1.0.0_linux_amd64.zip
+        mv terraform /usr/local/bin/
 
-    # step 4
-  # create container ss ss
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['run', '-itd', '--name', 'somning11',
-     '-p', '1011:80', '--rm', 'samweb-app:v1'
-     ]
+  # Step 2: Initialize Terraform
+  - name: 'hashicorp/terraform'
+    args: ['init']
 
-     # step 5 app running status
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['exec','somning11','curl','-f','http://localhost/health.html']
+# Step 3: Initialize Terraform
+  - name: 'hashicorp/terraform'
+    args: ['plan']
 
-  # step 6 push image in google artifacts registory
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['tag', 'samweb-app:v1', 'asia-docker.pkg.dev/vodafone-devsecops/vodafone-webapp-images/samweb-app:v1']
-  # step 7
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'asia-docker.pkg.dev/vodafone-devsecops/vodafone-webapp-images/samweb-app:v1']
-
-#step 8
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args: #['get','nodes']
-      - apply
-      - -f
-      - somning-app-deploy.yaml
-    env: #pass k8s info
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=my-first-cluster-1'
-
-#step 9
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args: #['get','nodes']
-      - get
-      - pods,deploy
-    env: #pass k8s info
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=my-first-cluster-1'
+  # Step 4: Apply Terraform configuration
+  - name: 'hashicorp/terraform'
+    args: ['apply', '-auto-approve']
