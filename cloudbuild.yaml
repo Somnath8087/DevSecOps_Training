@@ -36,4 +36,4 @@ steps:
     args: ['get','nodes']
     env: #pass k8s info
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-      - 'CLOUD_CONTAINER_CLUSTER=my-first-cluster-1'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=my-first-cluster-1'
